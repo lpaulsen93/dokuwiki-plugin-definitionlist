@@ -14,7 +14,8 @@ class plugin_definitionlist_syntax_test extends DokuWikiTest {
     }
 
     protected function render($rawwiki,$format='xhtml') {
-        return $this->renderer->render($rawwiki,$format);
+        $instructions = p_get_instructions($rawwiki);
+        return p_render($format, $instructions, $info);
     }
 
     function test_basic_singleline() {
