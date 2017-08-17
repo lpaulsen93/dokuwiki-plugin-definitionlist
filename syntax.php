@@ -225,7 +225,8 @@ class syntax_plugin_definitionlist extends DokuWiki_Syntax_Plugin {
      */
     protected function render_odt_new(Doku_Renderer $renderer, $data) {
         static $style_data = array();
-        $this->_set_odt_styles_new($renderer, $style_data);
+        static $dl_properties = array();
+        $this->_set_odt_styles_new($renderer, $style_data, $dl_properties);
 
         list ($tag, $state, $match) = $data;
 
@@ -233,7 +234,7 @@ class syntax_plugin_definitionlist extends DokuWiki_Syntax_Plugin {
             case DOKU_LEXER_ENTER:
                 if ($tag == 'dl') {
                     $properties = array();
-                    $renderer->_odtTableOpenUseProperties($properties);
+                    $renderer->_odtTableOpenUseProperties($dl_properties);
 
                     $properties ['width'] = $style_data ['margin-left'];
                     $renderer->_odtTableAddColumnUseProperties($properties);
@@ -322,7 +323,7 @@ class syntax_plugin_definitionlist extends DokuWiki_Syntax_Plugin {
      * @param  Array         $style_data Array for returning relevant properties to the caller
      * @author: LarsDW223
      */
-    protected function _set_odt_styles_new(Doku_Renderer $renderer, &$style_data) {
+    protected function _set_odt_styles_new(Doku_Renderer $renderer, &$style_data, &$dl_properties) {
         static $do_once = true;
 
         if ($do_once) {
@@ -346,6 +347,8 @@ class syntax_plugin_definitionlist extends DokuWiki_Syntax_Plugin {
             //$renderer->dumpHTMLStack ();
 
             $stack->open('dl', 'class="plugin_definitionlist"', NULL, NULL);
+            $renderer->getODTPropertiesFromElement ($dl_properties, $stack->getCurrentElement(), 'screen', true);
+
             $stack->open('dd', NULL, NULL, NULL);
 
             // Get CSS properties for ODT export.
